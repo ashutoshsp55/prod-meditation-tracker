@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meditation Tracker</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Meditation Tracker</h1>
+    
+    <!-- Total Meditation Time -->
+    <div>
+        <h2>Total Meditation Time: {{ total_time }} mins</h2>
+    </div>
+    
+    <!-- Add Meditation Record -->
+    <form id="add-form" method="POST" action="/add">
+        <label for="meditation_time">Time (in minutes):</label>
+        <input type="number" id="meditation_time" name="meditation_time" required>
+        <button type="submit">Add Record</button>
+    </form>
+    
+    <!-- Meditation Records History -->
+    <h3>Records:</h3>
+    <ul id="history">
+        {% for record in records %}
+        <li>{{ record.time }} mins on {{ record.date }}</li>
+        {% endfor %}
+    </ul>
+    
+    <script>
+        // Optional: Add AJAX for dynamic form submission
+        document.getElementById('add-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const response = await fetch('/add', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            alert(result.message);
+            location.reload(); // Reload the page to update records
+        });
+    </script>
+</body>
+</html>
+

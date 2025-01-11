@@ -9,8 +9,9 @@ app = Flask(__name__)
 # Filepath for JSON storage
 JSON_FILE = 'meditation_records.json'
 
-# GitHub configuration
-GITHUB_REPO = 'https://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@github.com/ashutoshsp55/prod-meditation-tracker.git'
+# GitHub configuration (Token will be used from environment variable)
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
+GITHUB_REPO = f'https://ashutoshsp55:{GITHUB_TOKEN}@github.com/ashutoshsp55/prod-meditation-tracker.git'
 
 # Helper function to load data from JSON file
 def load_data():
@@ -25,24 +26,26 @@ def save_data(data):
 # Function to commit and push to GitHub
 def push_to_github():
     try:
-        # Configure Git user details
+        # Configure Git user details (only once, if necessary)
         subprocess.run(['git', 'config', '--global', 'user.email', 'ashutoshraje3@gmail.com'], check=True)
         subprocess.run(['git', 'config', '--global', 'user.name', 'ashutoshsp55'], check=True)
-        
-        remote_url = 'https://ashutoshsp55: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@github.com/ashutoshsp55/prod-meditation-tracker.git'
-        remotes = subprocess.run(['git', 'remote'], capture_output=True, text=True, check=True).stdout
+
+        remote_url = f'https://ashutoshsp55:{GITHUB_TOKEN}@github.com/ashutoshsp55/prod-meditation-tracker.git'
+
+        # Check if origin exists, if not, add it
+        remotes = subprocess.run(['git', 'remote', '-v'], capture_output=True, text=True, check=True).stdout
         if 'origin' not in remotes:
             subprocess.run(['git', 'remote', 'add', 'origin', remote_url], check=True)
         else:
             subprocess.run(['git', 'remote', 'set-url', 'origin', remote_url], check=True)
-        
-        # Run Git commands to commit and push changes
+
+        # Commit and push the changes
         subprocess.run(['git', 'add', 'meditation_records.json'], check=True)
         subprocess.run(['git', 'commit', '-m', 'Updated meditation records'], check=True)
         subprocess.run(['git', 'push', '-u', 'origin', 'main'], check=True)
+
     except subprocess.CalledProcessError as e:
         print(f"Error pushing to GitHub: {e}")
-
 
 # Route: Main Page
 @app.route('/')

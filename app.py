@@ -29,10 +29,13 @@ def push_to_github():
         subprocess.run(['git', 'config', '--global', 'user.email', 'ashutoshraje3@gmail.com'], check=True)
         subprocess.run(['git', 'config', '--global', 'user.name', 'ashutoshsp55'], check=True)
         
+        remote_url = 'https://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@github.com/ashutoshsp55/prod-meditation-tracker.git'
+        subprocess.run(['git', 'remote', 'add', 'origin', remote_url], check=True)
+        
         # Run Git commands to commit and push changes
         subprocess.run(['git', 'add', JSON_FILE], check=True)
         subprocess.run(['git', 'commit', '-m', 'Updated meditation records'], check=True)
-        subprocess.run(['git', 'push'], check=True)
+        subprocess.run(['git', 'push', '-u', 'origin', 'main'], check=True)
     except subprocess.CalledProcessError as e:
         print(f"Error pushing to GitHub: {e}")
 

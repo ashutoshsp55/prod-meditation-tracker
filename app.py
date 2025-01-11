@@ -25,12 +25,17 @@ def save_data(data):
 # Function to commit and push to GitHub
 def push_to_github():
     try:
+        # Configure Git user details
+        subprocess.run(['git', 'config', '--global', 'user.email', 'ashutoshraje3@gmail.com'], check=True)
+        subprocess.run(['git', 'config', '--global', 'user.name', 'ashutoshsp55'], check=True)
+        
         # Run Git commands to commit and push changes
         subprocess.run(['git', 'add', JSON_FILE], check=True)
         subprocess.run(['git', 'commit', '-m', 'Updated meditation records'], check=True)
-        subprocess.run(['git', 'push', GITHUB_REPO], check=True)
+        subprocess.run(['git', 'push'], check=True)
     except subprocess.CalledProcessError as e:
         print(f"Error pushing to GitHub: {e}")
+
 
 # Route: Main Page
 @app.route('/')

@@ -4,45 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meditation Tracker</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <h1>Meditation Tracker</h1>
     
-    <!-- Total Meditation Time -->
     <div>
-        <h2>Total Meditation Time: {{ total_time }} mins</h2>
+        <h2>Total Meditation Time: {{ total_time }} minutes</h2>
     </div>
-    
-    <!-- Add Meditation Record -->
-    <form id="add-form" method="POST" action="/add">
-        <label for="meditation_time">Time (in minutes):</label>
-        <input type="number" id="meditation_time" name="meditation_time" required>
-        <button type="submit">Add Record</button>
-    </form>
-    
-    <!-- Meditation Records History -->
-    <h3>Records:</h3>
-    <ul id="history">
-        {% for record in records %}
-        <li>{{ record.time }} mins on {{ record.date }}</li>
-        {% endfor %}
-    </ul>
-    
+
+    <div>
+        <h3>Add Meditation Record</h3>
+        <form id="add-record-form" method="POST" action="/add">
+            <label for="meditation_time">Meditation Time (minutes):</label>
+            <input type="number" id="meditation_time" name="meditation_time" required>
+            <button type="submit">Add Record</button>
+        </form>
+    </div>
+
+    <div>
+        <h3>Meditation History</h3>
+        <ul>
+            {% for record in records %}
+                <li>{{ record.date_added }} - {{ record.meditation_time }} minutes</li>
+            {% endfor %}
+        </ul>
+    </div>
+
     <script>
-        // Optional: Add AJAX for dynamic form submission
-        document.getElementById('add-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const response = await fetch('/add', {
+        // Optional JavaScript for handling form submission (to keep it dynamic)
+        document.getElementById("add-record-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            fetch('/add', {
                 method: 'POST',
                 body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                location.reload();  // Reload the page to reflect the new record
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
-            const result = await response.json();
-            alert(result.message);
-            location.reload(); // Reload the page to update records
         });
     </script>
 </body>
 </html>
-

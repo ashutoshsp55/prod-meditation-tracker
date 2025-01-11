@@ -139,3 +139,4 @@ yarl==1.9.4
 yfinance==0.2.36
 yt-dlp==2024.8.6
 gunicorn==20.1.0
+flask_sqlalchemy
